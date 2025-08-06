@@ -1,0 +1,82 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Plagiarism Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      background: #fff;
+      padding: 30px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 20px;
+    }
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>C++ Plagiarism Checker</h1>
+    <form id="plagiarismForm">
+      <label for="text1">Text 1:</label>
+      <textarea name="text1" id="text1"></textarea>
+
+      <label for="text2">Text 2:</label>
+      <textarea name="text2" id="text2"></textarea>
+
+      <input type="submit" value="Check Plagiarism">
+    </form>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function tokenize(text) {
+      return new Set(text.toLowerCase()
+        .replace(/[.,!?;()"-]/g, "")
+        .split(/\s+/)
+        .filter(Boolean));
+    }
+
+    function calculateSimilarity(setA, setB) {
+      const intersection = [...setA].filter(word => setB.has(word));
+      const union = new Set([...setA, ...setB]);
+      return union.size === 0 ? 0 : (intersection.length / union.size) * 100;
+    }
+
+    document.getElementById("plagiarismForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const text1 = document.getElementById("text1").value;
+      const text2 = document.getElementById("text2").value;
+      const set1 = tokenize(text1);
+      const set2 = tokenize(text2);
+      const similarity = calculateSimilarity(set1, set2).toFixed(2);
+
+      document.getElementById("result").innerHTML =
+        `<strong>Plagiarism Detected:</strong> ${similarity}%`;
+    });
+  </script>
+</body>
+</html>
